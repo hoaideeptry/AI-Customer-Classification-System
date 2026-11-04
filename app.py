@@ -1,88 +1,67 @@
 from flask import Flask, request, render_template, jsonify
-import pandas as pd
-import datetime as dt
-import joblib
 import os
+
+# Import các module từ rfm_engine do nhóm tự viết
+from rfm_engine import read_and_clean_data, calculate_rfm, predict_segments
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
+
+# Đảm bảo các thư mục tồn tại khi app chạy
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+os.makedirs('models', exist_ok=True)
 
 @app.route('/')
 def index():
+    # Render giao diện web
     return render_template('index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    # Route API để xử lý file tải lên
     if 'file' not in request.files:
-        return jsonify({'error': 'Vui lòng chọn file dữ liệu!'})
+        return jsonify({'error': 'Vui lòng đính kèm file dữ liệu!'})
     
     file = request.files['file']
     if file.filename == '':
-        return jsonify({'error': 'Chưa chọn file!'})
+        return jsonify({'error': 'File rỗng!'})
         
     if file:
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filepath)
         
         try:
-            # 1. Đọc dữ liệu
-            if filepath.endswith('.csv'):
-                df = pd.read_csv(filepath, encoding='unicode_escape')
-            elif filepath.endswith(('.xls', '.xlsx')):
-                df = pd.read_excel(filepath)
-            else:
-                return jsonify({'error': 'Định dạng file không hỗ trợ. Vui lòng tải lên CSV hoặc Excel.'})
-                
-            # Kiểm tra cột bắt buộc
-            required_cols = ['CustomerID', 'InvoiceDate', 'Quantity', 'UnitPrice', 'InvoiceNo']
-            if not all(col in df.columns for col in required_cols):
-                return jsonify({'error': f'File thiếu các cột bắt buộc: {required_cols}'})
+            # --- QUY TRÌNH DATA PIPELINE (Gọi từ rfm_engine) ---
+            # 1. Tiền xử lý
+            df_clean = read_and_clean_data(filepath)
             
-            # 2. Tiền xử lý
-            df = df.dropna(subset=['CustomerID'])
-            df = df[(df['Quantity'] > 0) & (df['UnitPrice'] > 0)]
-            df['CustomerID'] = df['CustomerID'].astype(int).astype(str)
-            df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'])
-            df['TotalAmount'] = df['Quantity'] * df['UnitPrice']
+            # 2. Trích xuất đặc trưng RFM
+            rfm_df = calculate_rfm(df_clean)
             
-            # 3. Tính RFM
-            current_date = df['InvoiceDate'].max() + dt.timedelta(days=1)
-            rfm = df.groupby('CustomerID').agg({
-                'InvoiceDate': lambda x: (current_date - x.max()).days,
-                'InvoiceNo': 'nunique',
-                'TotalAmount': 'sum'
-            }).reset_index()
-            rfm.columns = ['CustomerID', 'Recency', 'Frequency', 'Monetary']
+            # 3. Chạy mô hình phân loại khách hàng
+            final_df = predict_segments(rfm_df)
             
-            # 4. Load Model AI
-            try:
-                model = joblib.load('rfm_classifier_model.pkl')
-            except FileNotFoundError:
-                return jsonify({'error': 'Không tìm thấy file rfm_classifier_model.pkl trong thư mục hệ thống.'})
-                
-            # 5. Dự đoán
-            X = rfm[['Recency', 'Frequency', 'Monetary']]
-            predictions = model.predict(X)
-            rfm['Segment'] = predictions
+            # --- CHUẨN BỊ RESPONSE CHO FRONTEND ---
+            stats = final_df['Segment'].value_counts().to_dict()
+            final_df['Monetary'] = final_df['Monetary'].round(2)
             
-            # 6. Chuẩn bị kết quả trả về Frontend
-            stats = rfm['Segment'].value_counts().to_dict()
-            
-            # Formatting tiền tệ và làm tròn ngày cho đẹp
-            rfm['Monetary'] = rfm['Monetary'].round(2)
-            top_customers = rfm.head(50).to_dict(orient='records')
+            # Lấy top 50 khách để hiển thị trên bảng
+            top_customers = final_df.head(50).to_dict(orient='records')
             
             return jsonify({
                 'success': True,
                 'stats': stats,
-                'total_customers': len(rfm),
+                'total_customers': len(final_df),
                 'customers': top_customers
             })
             
         except Exception as e:
-            return jsonify({'error': f'Lỗi khi xử lý dữ liệu: {str(e)}'})
+            # Bắt và trả về lỗi nếu có trục trặc trong quá trình tính toán
+            return jsonify({'error': f'Lỗi hệ thống Pipeline: {str(e)}'})
 
 if __name__ == '__main__':
-    print("Khởi động AI Customer Segmentation Web App...")
+    print("=====================================================")
+    print("🚀 HỆ THỐNG RFM CUSTOMER SEGMENTATION ĐANG CHẠY...")
+    print("👉 Mở trình duyệt tại: http://127.0.0.1:5000")
+    print("=====================================================")
     app.run(debug=True, port=5000)

@@ -1,194 +1,506 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Segmentation AI System</title>
+    <title>AI Customer Segmentation System</title>
+    
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Toastify CSS cho thông báo xịn xò -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    
     <style>
-        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .hero { background: linear-gradient(135deg, #0d6efd, #0dcaf0); color: white; padding: 40px 0; border-radius: 0 0 20px 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 30px; }
-        .card { border: none; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s; }
-        .card:hover { transform: translateY(-5px); }
-        #results { display: none; }
-        .table-responsive { max-height: 400px; overflow-y: auto; }
-        th { position: sticky; top: 0; background-color: #f8f9fa; z-index: 1; }
-        .badge-VIP { background-color: #ffc107; color: #000; }
-        .badge-Trung { background-color: #198754; color: #fff; }
-        .badge-Vang { background-color: #0dcaf0; color: #000; }
-        .badge-Nguy { background-color: #dc3545; color: #fff; }
+        /* --- HỆ THỐNG BIẾN CSS (HỖ TRỢ DARK/LIGHT MODE) --- */
+        :root[data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --accent-blue: #3b82f6;
+            --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.3);
+            --terminal-bg: #000000;
+            --terminal-border: #333333;
+            --table-hover: rgba(255, 255, 255, 0.05);
+        }
+
+        :root[data-theme="light"] {
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-blue: #2563eb;
+            --shadow-glow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --terminal-bg: #1e293b; /* Terminal vẫn nên giữ màu tối cho ngầu */
+            --terminal-border: #475569;
+            --table-hover: rgba(0, 0, 0, 0.02);
+        }
+
+        body { 
+            background-color: var(--bg-body); 
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* --- NAVBAR & TABS --- */
+        .navbar-custom {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        .nav-tabs { border-bottom: 2px solid var(--border-color); margin-bottom: 1.5rem; }
+        .nav-tabs .nav-link { 
+            color: var(--text-muted); 
+            font-weight: 600; 
+            border: none;
+            padding: 1rem 1.5rem;
+            transition: all 0.2s;
+        }
+        .nav-tabs .nav-link:hover { color: var(--accent-blue); }
+        .nav-tabs .nav-link.active {
+            color: var(--accent-blue);
+            background: transparent;
+            border-bottom: 3px solid var(--accent-blue);
+        }
+
+        /* --- CARDS & UI COMPONENTS --- */
+        .card { 
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-glow);
+            transition: all 0.3s;
+        }
+        .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            padding: 1rem 1.25rem;
+        }
+
+        /* Vùng Upload */
+        .upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 3rem 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            background-color: rgba(59, 130, 246, 0.02);
+        }
+        .upload-zone:hover {
+            border-color: var(--accent-blue);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+        .upload-zone input[type="file"] {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; cursor: pointer;
+        }
+
+        /* Terminal Log */
+        .terminal-log {
+            background-color: var(--terminal-bg);
+            color: #4ade80; /* Xanh lá terminal */
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.85rem;
+            padding: 1rem;
+            border-radius: 8px;
+            height: 350px;
+            overflow-y: auto;
+            border: 1px solid var(--terminal-border);
+        }
+        .terminal-log p { margin-bottom: 4px; }
+        .terminal-log .timestamp { color: #888; margin-right: 8px; }
+        .terminal-log .info { color: #3b82f6; }
+        .terminal-log .error { color: #ef4444; }
+
+        /* Bảng & Badge */
+        .table { color: var(--text-main); margin-bottom: 0; }
+        .table th { 
+            background-color: var(--bg-card); 
+            color: var(--text-muted); 
+            border-bottom: 1px solid var(--border-color); 
+        }
+        .table td { border-color: var(--border-color); vertical-align: middle; }
+        .table tbody tr:hover { background-color: var(--table-hover); }
+        .table-responsive { max-height: 500px; overflow-y: auto; }
+
+        .badge { padding: 6px 12px; font-weight: 500; }
+        .bg-vip { background-color: rgba(234, 179, 8, 0.2) !important; color: #ca8a04 !important; border: 1px solid #fde047; }
+        .bg-trungthanh { background-color: rgba(34, 197, 94, 0.2) !important; color: #16a34a !important; border: 1px solid #86efac; }
+        .bg-vanglai { background-color: rgba(56, 189, 248, 0.2) !important; color: #0284c7 !important; border: 1px solid #7dd3fc; }
+        .bg-nguyco { background-color: rgba(239, 68, 68, 0.2) !important; color: #dc2626 !important; border: 1px solid #fca5a5; }
+        
+        [data-theme="dark"] .bg-vip { color: #fef08a !important; }
+        [data-theme="dark"] .bg-trungthanh { color: #86efac !important; }
+        [data-theme="dark"] .bg-vanglai { color: #7dd3fc !important; }
+        [data-theme="dark"] .bg-nguyco { color: #fca5a5 !important; }
+
+        /* Theme Toggle Button */
+        #themeToggle { cursor: pointer; font-size: 1.25rem; transition: transform 0.3s; }
+        #themeToggle:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
 
-<div class="hero text-center">
-    <div class="container">
-        <h1 class="display-5 fw-bold">HỆ THỐNG PHÂN LOẠI KHÁCH HÀNG AI</h1>
-        <p class="lead">Dựa trên mô hình RFM & Rừng Ngẫu Nhiên (Random Forest)</p>
-    </div>
-</div>
-
-<div class="container">
-    <div class="row justify-content-center mb-5">
-        <div class="col-md-8">
-            <div class="card p-4">
-                <h4 class="mb-3 text-primary"><i class="bi bi-cloud-upload"></i> Tải lên dữ liệu lịch sử mua hàng</h4>
-                <form id="uploadForm">
-                    <div class="mb-3">
-                        <label for="fileInput" class="form-label text-muted">Hỗ trợ định dạng: .CSV, .XLS, .XLSX (Phải chứa các cột: CustomerID, InvoiceDate, Quantity, UnitPrice)</label>
-                        <input class="form-control form-control-lg" type="file" id="fileInput" name="file" accept=".csv, .xls, .xlsx" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold" id="submitBtn">
-                        <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                        Chạy Mô Hình Phân Loại
-                    </button>
-                </form>
-                <div id="errorAlert" class="alert alert-danger mt-3 d-none"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Kết quả -->
-    <div id="results">
-        <div class="row mb-4">
-            <!-- Biểu đồ Chart.js -->
-            <div class="col-md-5">
-                <div class="card p-4 h-100">
-                    <h5 class="text-center text-primary mb-4">Tỷ lệ Phân khúc Khách hàng</h5>
-                    <div style="position: relative; height: 300px; width: 100%;">
-                        <canvas id="segmentChart"></canvas>
-                    </div>
-                    <p class="text-center mt-3 fw-bold text-success" id="totalCustomers"></p>
+    <!-- NAVBAR -->
+    <nav class="navbar-custom mb-4">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-cpu-fill fs-3" style="color: var(--accent-blue);"></i>
+                <div>
+                    <h5 class="mb-0 fw-bold">RFM INTELLIGENCE</h5>
+                    <small class="text-muted">Customer Segmentation System v2.0</small>
                 </div>
             </div>
+            <div class="d-flex align-items-center gap-4">
+                <span class="badge bg-success bg-opacity-25 text-success border border-success">
+                    <i class="bi bi-circle-fill small me-1"></i> API ONLINE
+                </span>
+                <!-- Nút chuyển Dark/Light Mode -->
+                <i class="bi bi-moon-stars-fill text-primary" id="themeToggle" title="Chuyển chế độ sáng/tối"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        
+        <!-- HỆ THỐNG TABS -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="ingestion-tab" data-bs-toggle="tab" data-bs-target="#ingestion" type="button" role="tab">
+                    <i class="bi bi-cloud-arrow-up me-2"></i> DATA INGESTION & LOGS
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab" disabled>
+                    <i class="bi bi-bar-chart-fill me-2"></i> ANALYTICS DASHBOARD
+                </button>
+            </li>
+        </ul>
+
+        <!-- NỘI DUNG TABS -->
+        <div class="tab-content" id="myTabContent">
             
-            <!-- Bảng dữ liệu -->
-            <div class="col-md-7">
-                <div class="card p-4 h-100">
-                    <h5 class="text-primary mb-4">Danh sách Khách hàng phân loại (Top 50)</h5>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Mã KH</th>
-                                    <th>Recency (Ngày)</th>
-                                    <th>Frequency (Đơn)</th>
-                                    <th>Monetary (£)</th>
-                                    <th>Phân Khúc</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody"></tbody>
-                        </table>
+            <!-- TAB 1: UPLOAD & TERMINAL -->
+            <div class="tab-pane fade show active" id="ingestion" role="tabpanel">
+                <div class="row g-4">
+                    <!-- Cột Upload -->
+                    <div class="col-lg-5">
+                        <div class="card h-100">
+                            <div class="card-header"><i class="bi bi-file-earmark-spreadsheet me-2"></i>DATASET UPLOAD</div>
+                            <div class="card-body d-flex flex-column justify-content-center">
+                                <form id="uploadForm" class="w-100">
+                                    <div class="upload-zone mb-4" id="dropZone">
+                                        <i class="bi bi-database-add fs-1" style="color: var(--accent-blue);"></i>
+                                        <h5 class="mt-3 mb-1">Kéo thả dữ liệu vào đây</h5>
+                                        <p class="text-muted small mb-0">Hỗ trợ: .CSV, .XLS, .XLSX</p>
+                                        <input type="file" id="fileInput" name="file" accept=".csv, .xls, .xlsx" required>
+                                    </div>
+                                    <div id="fileInfo" class="alert alert-info d-none py-2 text-center" style="background-color: rgba(59, 130, 246, 0.1); border-color: var(--accent-blue); color: var(--accent-blue);">
+                                        <i class="bi bi-check2-circle me-1"></i> Đã chọn file: <strong id="fileNameDisplay"></strong>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold mt-2" id="submitBtn" style="background-color: var(--accent-blue); border: none;">
+                                        <i class="bi bi-play-fill me-1"></i> EXECUTE ML PIPELINE
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cột Terminal Log -->
+                    <div class="col-lg-7">
+                        <div class="card h-100">
+                            <div class="card-header"><i class="bi bi-terminal me-2"></i>SYSTEM LOGS</div>
+                            <div class="card-body p-0">
+                                <div class="terminal-log" id="systemLog">
+                                    <p><span class="timestamp">[SYSTEM]</span> Môi trường AI đã khởi tạo thành công.</p>
+                                    <p><span class="timestamp">[SYSTEM]</span> Sẵn sàng nhận dữ liệu. Vui lòng tải file lên...</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- TAB 2: DASHBOARD -->
+            <div class="tab-pane fade" id="dashboard" role="tabpanel">
+                <!-- Row chứa số liệu tổng quan (KPIs) -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="card text-center p-3 h-100" style="border-left: 4px solid var(--accent-blue);">
+                            <small class="text-muted text-uppercase fw-bold mb-2">TỔNG KHÁCH HÀNG HỢP LỆ</small>
+                            <h2 class="fw-bold mb-0" id="kpiTotal">0</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center p-3 h-100" style="border-left: 4px solid #f59e0b;">
+                            <small class="text-muted text-uppercase fw-bold mb-2">TỶ LỆ KHÁCH VIP</small>
+                            <h2 class="fw-bold mb-0 text-warning" id="kpiVip">0%</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center p-3 h-100" style="border-left: 4px solid #ef4444;">
+                            <small class="text-muted text-uppercase fw-bold mb-2">TỶ LỆ NGUY CƠ RỜI BỎ</small>
+                            <h2 class="fw-bold mb-0 text-danger" id="kpiRisk">0%</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Biểu đồ -->
+                    <div class="col-lg-4">
+                        <div class="card h-100">
+                            <div class="card-header"><i class="bi bi-pie-chart me-2"></i>PHÂN BỔ TẬP KHÁCH HÀNG</div>
+                            <div class="card-body d-flex align-items-center justify-content-center">
+                                <div style="position: relative; height: 300px; width: 100%;">
+                                    <canvas id="segmentChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bảng dữ liệu -->
+                    <div class="col-lg-8">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-table me-2"></i>KẾT QUẢ DỰ ĐOÁN TỪ RANDOM FOREST</span>
+                                <span class="badge bg-secondary">Hiển thị Top 50</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-borderless align-middle mb-0">
+                                    <thead style="position: sticky; top: 0; z-index: 1;">
+                                        <tr>
+                                            <th>MÃ KHÁCH (ID)</th>
+                                            <th class="text-end">R <small>(Ngày)</small></th>
+                                            <th class="text-end">F <small>(Đơn hàng)</small></th>
+                                            <th class="text-end">M <small>(£)</small></th>
+                                            <th class="text-center">PHÂN KHÚC AI</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-</div>
 
-<script>
-    let myChart = null;
+    <!-- Bootstrap JS (Cần thiết cho chức năng Tab) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Toastify JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
-    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const fileInput = document.getElementById('fileInput');
-        const submitBtn = document.getElementById('submitBtn');
-        const spinner = document.getElementById('spinner');
-        const errorAlert = document.getElementById('errorAlert');
-        const resultsDiv = document.getElementById('results');
-        
-        if (!fileInput.files[0]) return;
+    <script>
+        // --- 1. CHỨC NĂNG THEME TOGGLE (SÁNG/TỐI) ---
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
 
-        // UI Loading state
-        submitBtn.disabled = true;
-        spinner.classList.remove('d-none');
-        errorAlert.classList.add('d-none');
-        resultsDiv.style.display = 'none';
-
-        const formData = new FormData();
-        formData.append('file', fileInput.files[0]);
-
-        try {
-            const response = await fetch('/predict', {
-                method: 'POST',
-                body: formData
-            });
-            const data = await response.json();
-
-            if (data.error) {
-                errorAlert.textContent = data.error;
-                errorAlert.classList.remove('d-none');
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            htmlElement.setAttribute('data-theme', newTheme);
+            
+            // Đổi icon
+            if(newTheme === 'light') {
+                themeToggleBtn.classList.remove('bi-moon-stars-fill');
+                themeToggleBtn.classList.add('bi-sun-fill', 'text-warning');
+                themeToggleBtn.classList.remove('text-primary');
             } else {
-                displayResults(data);
+                themeToggleBtn.classList.remove('bi-sun-fill', 'text-warning');
+                themeToggleBtn.classList.add('bi-moon-stars-fill', 'text-primary');
             }
-        } catch (err) {
-            errorAlert.textContent = 'Đã xảy ra lỗi kết nối đến server!';
-            errorAlert.classList.remove('d-none');
-        } finally {
-            submitBtn.disabled = false;
-            spinner.classList.add('d-none');
-        }
-    });
-
-    function displayResults(data) {
-        document.getElementById('results').style.display = 'block';
-        document.getElementById('totalCustomers').textContent = `Tổng số khách hàng hợp lệ: ${data.total_customers.toLocaleString()}`;
-
-        // Cập nhật biểu đồ Chart.js
-        const ctx = document.getElementById('segmentChart').getContext('2d');
-        const labels = Object.keys(data.stats);
-        const values = Object.values(data.stats);
-        
-        // Cấu hình màu cho từng cụm
-        const colors = labels.map(label => {
-            if(label.includes('VIP')) return '#ffc107';
-            if(label.includes('Trung Thành')) return '#198754';
-            if(label.includes('Vãng Lai')) return '#0dcaf0';
-            return '#dc3545'; // Nguy cơ
+            
+            // Cập nhật lại màu chữ của biểu đồ Chart.js nếu đã vẽ
+            if (myChart) {
+                Chart.defaults.color = newTheme === 'dark' ? '#94a3b8' : '#64748b';
+                myChart.update();
+            }
         });
 
-        if (myChart) myChart.destroy();
-        myChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: values,
-                    backgroundColor: colors,
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom' }
+        // Hàm gọi Toastify thông báo
+        function showToast(text, isSuccess = true) {
+            Toastify({
+                text: text,
+                duration: 3000,
+                gravity: "bottom", position: "right",
+                style: {
+                    background: isSuccess ? "linear-gradient(to right, #00b09b, #96c93d)" : "linear-gradient(to right, #ff5f6d, #ffc371)",
+                    borderRadius: "8px", fontWeight: "bold"
                 }
+            }).showToast();
+        }
+
+        // --- 2. XỬ LÝ LOG VÀ FORM UPLOAD ---
+        const logBox = document.getElementById('systemLog');
+        let myChart = null;
+        
+        function addLog(message, type="normal") {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
+            let colorClass = type === 'info' ? 'info' : type === 'error' ? 'error' : '';
+            
+            const p = document.createElement('p');
+            p.innerHTML = `<span class="timestamp">[${timeStr}]</span><span class="${colorClass}"> ${message}</span>`;
+            logBox.appendChild(p);
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        // Hiện tên file khi chọn
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            if(e.target.files[0]) {
+                document.getElementById('fileNameDisplay').textContent = e.target.files[0].name;
+                document.getElementById('fileInfo').classList.remove('d-none');
+                addLog(`Đã tải file vào bộ nhớ đệm: ${e.target.files[0].name}`, "info");
+                showToast("Đã chọn file thành công!");
             }
         });
 
-        // Cập nhật bảng
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
-        data.customers.forEach(cus => {
-            let badgeClass = 'bg-secondary';
-            if(cus.Segment.includes('VIP')) badgeClass = 'badge-VIP';
-            else if(cus.Segment.includes('Trung Thành')) badgeClass = 'badge-Trung';
-            else if(cus.Segment.includes('Vãng Lai')) badgeClass = 'badge-Vang';
-            else badgeClass = 'badge-Nguy';
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('fileInput');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (!fileInput.files[0]) {
+                showToast("Vui lòng chọn file dữ liệu trước!", false);
+                return;
+            }
 
-            const row = `<tr>
-                <td class="fw-bold text-muted">${cus.CustomerID}</td>
-                <td>${cus.Recency}</td>
-                <td>${cus.Frequency}</td>
-                <td>${cus.Monetary.toLocaleString()}</td>
-                <td><span class="badge ${badgeClass} px-2 py-1 rounded-pill">${cus.Segment}</span></td>
-            </tr>`;
-            tbody.insertAdjacentHTML('beforeend', row);
+            // UI Loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> ĐANG XỬ LÝ...';
+            
+            addLog(`Khởi chạy Data Pipeline cho ${fileInput.files[0].name}...`, "info");
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                // Gửi request thật tới Backend
+                const response = await fetch('/predict', { method: 'POST', body: formData });
+                const data = await response.json();
+
+                if (data.error) {
+                    addLog(`[LỖI API] ${data.error}`, "error");
+                    showToast(data.error, false);
+                    resetBtn(submitBtn);
+                    return;
+                }
+                
+                // Trì hoãn 1 chút hiển thị log ảo để tạo cảm giác AI đang suy nghĩ
+                setTimeout(() => addLog("> Thực thi read_and_clean_data()...", "normal"), 300);
+                setTimeout(() => addLog("> Trích xuất đặc trưng calculate_rfm()...", "normal"), 800);
+                setTimeout(() => addLog("> Chạy Inference với Random Forest model...", "info"), 1300);
+                
+                setTimeout(() => {
+                    addLog(`[THÀNH CÔNG] Đã phân loại ${data.total_customers} khách hàng.`, "info");
+                    
+                    // Render Dashboard
+                    displayResults(data);
+                    
+                    // Kích hoạt Tab Dashboard và tự động chuyển sang
+                    const dashTabBtn = document.getElementById('dashboard-tab');
+                    dashTabBtn.disabled = false;
+                    const tabTrigger = new bootstrap.Tab(dashTabBtn);
+                    tabTrigger.show();
+                    
+                    showToast("Phân tích hoàn tất! Chuyển sang Dashboard.");
+                    resetBtn(submitBtn);
+                }, 2000);
+
+            } catch (err) {
+                addLog(`[LỖI MẠNG] Không thể kết nối tới Server Flask.`, "error");
+                showToast("Lỗi kết nối máy chủ!", false);
+                resetBtn(submitBtn);
+            }
         });
-    }
-</script>
+
+        function resetBtn(btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-play-fill me-1"></i> EXECUTE ML PIPELINE';
+        }
+
+        // --- 3. XỬ LÝ DASHBOARD: CHART & BẢNG ---
+        function displayResults(data) {
+            const total = data.total_customers;
+            const vipCount = data.stats['Khách VIP'] || 0;
+            const riskCount = data.stats['Khách Nguy Cơ'] || 0;
+
+            // Cập nhật KPIs
+            document.getElementById('kpiTotal').textContent = total.toLocaleString();
+            document.getElementById('kpiVip').textContent = ((vipCount / total) * 100).toFixed(1) + '%';
+            document.getElementById('kpiRisk').textContent = ((riskCount / total) * 100).toFixed(1) + '%';
+
+            // Vẽ Biểu đồ Chart.js
+            Chart.defaults.color = document.documentElement.getAttribute('data-theme') === 'dark' ? '#94a3b8' : '#64748b';
+            const ctx = document.getElementById('segmentChart').getContext('2d');
+            const labels = Object.keys(data.stats);
+            const values = Object.values(data.stats);
+            
+            const colors = labels.map(label => {
+                if(label.includes('VIP')) return '#eab308'; // Vàng
+                if(label.includes('Trung Thành')) return '#22c55e'; // Xanh lá
+                if(label.includes('Vãng Lai')) return '#0ea5e9'; // Xanh dương
+                return '#ef4444'; // Đỏ
+            });
+
+            if (myChart) myChart.destroy();
+            myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: colors,
+                        borderWidth: 0, hoverOffset: 5
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 15 } }
+                    }
+                }
+            });
+
+            // Đổ dữ liệu vào Bảng
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            data.customers.forEach(cus => {
+                let badgeClass = '';
+                if(cus.Segment.includes('VIP')) badgeClass = 'bg-vip';
+                else if(cus.Segment.includes('Trung Thành')) badgeClass = 'bg-trungthanh';
+                else if(cus.Segment.includes('Vãng Lai')) badgeClass = 'bg-vanglai';
+                else badgeClass = 'bg-nguyco';
+
+                const row = `<tr>
+                    <td class="fw-bold opacity-75">${cus.CustomerID}</td>
+                    <td class="text-end">${cus.Recency}</td>
+                    <td class="text-end">${cus.Frequency}</td>
+                    <td class="text-end fw-medium text-success">${cus.Monetary.toLocaleString()}</td>
+                    <td class="text-center"><span class="badge ${badgeClass} w-100">${cus.Segment}</span></td>
+                </tr>`;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+    </script>
 </body>
 </html>
