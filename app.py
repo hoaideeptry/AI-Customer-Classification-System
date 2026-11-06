@@ -7,6 +7,12 @@ from rfm_engine import read_and_clean_data, calculate_rfm, predict_segments
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
+# THÊM MỚI: Cấu hình định dạng file cho phép
+ALLOWED_EXTENSIONS = {'csv', 'xlsx', 'xls'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 # Đảm bảo các thư mục tồn tại khi app chạy
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs('models', exist_ok=True)
@@ -25,6 +31,10 @@ def predict():
     file = request.files['file']
     if file.filename == '':
         return jsonify({'error': 'File rỗng!'})
+        
+    # THÊM MỚI: Bắt lỗi nếu người dùng tải lên sai định dạng file (ví dụ: .jpg, .png)
+    if file and not allowed_file(file.filename):
+        return jsonify({'error': 'Lỗi hệ thống Pipeline: Định dạng file không được hỗ trợ. Vui lòng dùng .csv hoặc .xlsx'})
         
     if file:
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
