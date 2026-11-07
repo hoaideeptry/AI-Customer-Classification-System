@@ -1,0 +1,140 @@
+<!-- ================= PAGE 3: DASHBOARD (BẢNG ĐIỀU KHIỂN) ================= -->
+<section class="tab-pane fade" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <h4 class="fw-bold mb-1"><i class="bi bi-speedometer2 text-primary me-2"></i><span data-i18n="dashboard_title">Bảng Điều Khiển Phân Cụm Khách Hàng</span></h4>
+        <p class="text-muted small mb-0" data-i18n="dashboard_sub">Trực quan hóa đa chiều các chỉ số RFM và chiến lược Marketing tự động</p>
+      </div>
+      <button class="btn btn-sm btn-outline-primary" type="button" onclick="window.print()">
+        <i class="bi bi-printer me-1"></i><span data-i18n="btn_print_report">In báo cáo</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 3 Thẻ KPI Metrics -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card metric-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div><small data-i18n="kpi_total">TỔNG KHÁCH HÀNG</small><h2 id="kpiTotal">0</h2></div>
+          <div class="metric-icon text-primary"><i class="bi bi-people-fill"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card metric-card" style="border-left-color: #eab308;">
+        <div class="d-flex justify-content-between align-items-center">
+          <div><small data-i18n="kpi_vip">TỶ LỆ KHÁCH VIP</small><h2 id="kpiVip" class="text-warning">0%</h2></div>
+          <div class="metric-icon text-warning"><i class="bi bi-star-fill"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card metric-card" style="border-left-color: #ef4444;">
+        <div class="d-flex justify-content-between align-items-center">
+          <div><small data-i18n="kpi_risk">NGUY CƠ RỜI BỎ</small><h2 id="kpiRisk" class="text-danger">0%</h2></div>
+          <div class="metric-icon text-danger"><i class="bi bi-exclamation-octagon-fill"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hàng Biểu đồ tròn và Chiến lược AI -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-5">
+      <div class="card h-100">
+        <div class="card-header"><i class="bi bi-pie-chart-fill me-2"></i><span data-i18n="chart_segment_title">PHÂN BỔ PHÂN KHÚC</span></div>
+        <div class="card-body chart-wrap"><canvas id="segmentChart" aria-label="Biểu đồ phân khúc khách hàng"></canvas></div>
+      </div>
+    </div>
+    <div class="col-lg-7">
+      <div class="card h-100">
+        <div class="card-header"><i class="bi bi-lightbulb-fill text-warning me-2"></i><span data-i18n="ai_strategy_title">Gợi ý Chiến lược từ AI</span></div>
+        <div class="card-body" id="aiStrategy" aria-live="polite" data-i18n="ai_strategy_placeholder">Tải dữ liệu để nhận gợi ý chiến lược.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hàng Biểu đồ 3D Scatter và What-If Simulation -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-7">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-box me-2"></i><span data-i18n="chart_3d_title">KHÔNG GIAN PHÂN CỤM 3D (R - F - M)</span></span>
+          <span class="text-muted small"><i class="bi bi-cursor-fill me-1"></i><span data-i18n="chart_3d_hint">Xoay / cuộn để khám phá 3D</span></span>
+        </div>
+        <div class="card-body p-2"><div id="scatter3dChart" style="width: 100%; height: 460px;"></div></div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-sliders2-vertical me-2"></i><span data-i18n="whatif_card_title">MÔ PHỎNG KHÁCH HÀNG (WHAT-IF)</span></span>
+          <span class="badge bg-primary bg-opacity-25 text-primary">Real-time AI</span>
+        </div>
+        <div class="card-body d-flex flex-column justify-content-between">
+          <p class="text-muted small mb-3" data-i18n="whatif_sub">Thử nghiệm thay đổi chỉ số R-F-M để quan sát AI dự đoán phân khúc trong thời gian thực:</p>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label for="whatifRecency" class="form-label small fw-bold mb-0"><i class="bi bi-calendar3 me-1 text-primary"></i><span data-i18n="whatif_recency_label">Recency (R - Số ngày):</span></label>
+              <span class="badge bg-secondary" id="valRecency">30 ngày</span>
+            </div>
+            <input type="range" class="form-range" id="whatifRecency" min="1" max="365" value="30" step="1">
+            <div class="d-flex justify-content-between text-muted" style="font-size: 0.72rem;">
+              <span data-i18n="whatif_r_min">1 ngày (Gần đây)</span><span data-i18n="whatif_r_max">365 ngày (Lâu)</span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label for="whatifFrequency" class="form-label small fw-bold mb-0"><i class="bi bi-arrow-repeat me-1 text-success"></i><span data-i18n="whatif_frequency_label">Frequency (F - Số đơn hàng):</span></label>
+              <span class="badge bg-secondary" id="valFrequency">8 lần</span>
+            </div>
+            <input type="range" class="form-range" id="whatifFrequency" min="1" max="50" value="8" step="1">
+            <div class="d-flex justify-content-between text-muted" style="font-size: 0.72rem;">
+              <span data-i18n="whatif_f_min">1 lần</span><span data-i18n="whatif_f_max">50 lần</span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label for="whatifMonetary" class="form-label small fw-bold mb-0"><i class="bi bi-cash-coin me-1 text-warning"></i><span data-i18n="whatif_monetary_label">Monetary (M - Tổng chi tiêu):</span></label>
+              <span class="badge bg-secondary" id="valMonetary">$1,500</span>
+            </div>
+            <input type="range" class="form-range" id="whatifMonetary" min="10" max="10000" value="1500" step="50">
+            <div class="d-flex justify-content-between text-muted" style="font-size: 0.72rem;">
+              <span data-i18n="whatif_m_min">$10</span><span data-i18n="whatif_m_max">$10,000+</span>
+            </div>
+          </div>
+          <div class="p-3 rounded text-center whatif-result-box mt-2">
+            <small class="text-muted text-uppercase fw-bold d-block mb-1" data-i18n="whatif_result_header">Dự đoán phân khúc AI</small>
+            <h4 class="mb-2" id="whatifSegment"><span class="badge bg-vip px-3 py-2">Khách VIP</span></h4>
+            <p class="small text-muted mb-0" id="whatifNote">Khách hàng giao dịch thường xuyên với giá trị chi tiêu lớn.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bảng kết quả Top 50 Khách hàng -->
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <span><i class="bi bi-table me-2"></i><span data-i18n="table_results_title">KẾT QUẢ DỰ ĐOÁN (TOP 50 KHÁCH HÀNG TIÊU BIỂU)</span></span>
+      <span class="badge bg-secondary">Top 50</span>
+    </div>
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th data-i18n="th_cust_id">Mã khách</th>
+            <th class="text-end" data-i18n="th_recency">Recency (Ngày)</th>
+            <th class="text-end" data-i18n="th_frequency">Frequency (Lần)</th>
+            <th class="text-end" data-i18n="th_monetary">Monetary ($)</th>
+            <th data-i18n="th_segment">Phân khúc AI</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>

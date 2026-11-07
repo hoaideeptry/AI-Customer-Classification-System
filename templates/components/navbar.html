@@ -1,0 +1,112 @@
+<!-- ============================================== -->
+<!-- SIDEBAR BÊN TRÁI (THEO PHONG CÁCH QUẢN TRỊ ADMIN) -->
+<!-- ============================================== -->
+<aside class="admin-sidebar" id="sidebar">
+  <!-- Thương hiệu / Logo Header -->
+  <div class="sidebar-brand">
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-cpu-fill fs-3 text-primary"></i>
+      <div class="brand-text">
+        <span class="brand-title" data-i18n="app_title">RFM INTELLIGENCE</span>
+        <span class="brand-sub" data-i18n="app_sub">Hệ thống AI Phân tích Khách hàng</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danh mục Menu điều hướng dọc -->
+  <nav class="sidebar-menu">
+    <div class="menu-section-title" data-i18n="nav_section_data">QUẢN TRỊ DỮ LIỆU & AI</div>
+    <ul class="nav flex-column" id="adminTabs" role="tablist">
+      
+      <li class="nav-item">
+        <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload" type="button" role="tab" aria-selected="true">
+          <i class="bi bi-cloud-arrow-up-fill me-2"></i>
+          <span data-i18n="nav_upload">1. Tải lên Dữ liệu</span>
+        </button>
+      </li>
+
+      <li class="nav-item">
+        <button class="nav-link" id="logs-tab" data-bs-toggle="tab" data-bs-target="#logs" type="button" role="tab" aria-selected="false">
+          <i class="bi bi-clock-history me-2"></i>
+          <span data-i18n="nav_logs">2. Nhật ký Hệ thống</span>
+          <span class="badge rounded-pill bg-primary ms-auto" id="sidebarLogCount">2</span>
+        </button>
+      </li>
+
+      <li class="nav-item">
+        <button class="nav-link" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab" aria-selected="false" disabled>
+          <i class="bi bi-speedometer2 me-2"></i>
+          <span data-i18n="nav_dashboard">3. Bảng Điều Khiển</span>
+          <span class="badge rounded-pill bg-success ms-auto d-none" id="readyBadge">Ready</span>
+        </button>
+      </li>
+
+    </ul>
+
+    <div class="menu-section-title mt-4" data-i18n="nav_section_system">HỆ THỐNG & MÔ HÌNH</div>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link text-muted" href="/static/sample_rfm.csv" download>
+          <i class="bi bi-file-earmark-arrow-down me-2"></i>
+          <span data-i18n="nav_sample_csv">Tải file CSV Mẫu</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link text-muted" type="button" data-bs-toggle="modal" data-bs-target="#projectInfoModal" onclick="showSystemInfoModal()">
+          <i class="bi bi-shield-check me-2"></i>
+          <span data-i18n="nav_project_info">Thông tin Đồ án</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Footer của Sidebar -->
+  <div class="sidebar-footer">
+    <div class="d-flex align-items-center gap-2">
+      <span class="status-indicator online"></span>
+      <small class="text-muted" data-i18n="nav_engine_status">RFM Engine v2.0 AI</small>
+    </div>
+  </div>
+</aside>
+
+<!-- Lớp phủ Backdrop khi mở Sidebar trên Mobile/Tablet -->
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<!-- Top Navigation Header -->
+<header class="admin-topbar">
+  <div class="d-flex align-items-center gap-3">
+    <button class="btn btn-icon sidebar-toggle-btn" id="sidebarToggle" type="button" aria-label="Toggle Menu">
+      <i class="bi bi-list fs-4"></i>
+    </button>
+    <div class="breadcrumb-container d-none d-md-flex align-items-center gap-2">
+      <span class="text-muted small" data-i18n="breadcrumb_admin">Quản trị</span>
+      <i class="bi bi-chevron-right text-muted small"></i>
+      <span class="fw-semibold small text-primary" id="currentBreadcrumb" data-i18n="breadcrumb_upload">Tải lên dữ liệu</span>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-2 gap-sm-3">
+    <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 d-none d-sm-inline-flex align-items-center gap-1">
+      <span class="status-indicator online me-1"></span>API ONLINE
+    </span>
+
+    <!-- NÚT CHUYỂN ĐỔI NGÔN NGỮ (VI / EN) -->
+    <button class="btn theme-toggle d-flex align-items-center gap-1 px-2 border border-secondary border-opacity-25" id="langToggle" type="button" aria-label="Chuyển đổi ngôn ngữ">
+      <i class="bi bi-globe2 text-primary"></i>
+      <span id="currentLangLabel" class="fw-bold small">VI</span>
+    </button>
+
+    <!-- NÚT CHUYỂN ĐỔI GIAO DIỆN (DARK / LIGHT) -->
+    <button class="btn theme-toggle" id="themeToggle" type="button" aria-label="Chuyển giao diện">🌙</button>
+    
+    <div class="admin-user-profile d-flex align-items-center gap-2 border-start ps-3">
+      <div class="text-end d-none d-sm-block">
+        <div class="user-name">Admin</div>
+        <small class="user-role text-muted" data-i18n="admin_role">Hệ thống AI</small>
+      </div>
+      <div class="user-avatar">
+        <i class="bi bi-person-fill"></i>
+      </div>
+    </div>
+  </div>
+</header>

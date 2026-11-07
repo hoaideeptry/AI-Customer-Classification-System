@@ -1,0 +1,146 @@
+<!-- ================= PAGE 1: TẢI LÊN DỮ LIỆU & DATA MAPPER ================= -->
+<section class="tab-pane fade show active" id="upload" role="tabpanel" aria-labelledby="upload-tab">
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <h4 class="fw-bold mb-1"><i class="bi bi-cloud-arrow-up text-primary me-2"></i><span data-i18n="upload_header_title">Tải lên & Khớp Dữ Liệu Khách Hàng</span></h4>
+        <p class="text-muted small mb-0" data-i18n="upload_header_sub">Nạp tập tin giao dịch và cấu hình ánh xạ cột thông minh theo chuẩn SaaS</p>
+      </div>
+      <a href="/static/sample_rfm.csv" download class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-download me-1"></i><span data-i18n="btn_download_sample">Tải file mẫu (Sample CSV)</span>
+      </a>
+    </div>
+  </div>
+  <!-- BƯỚC 1: KHUNG CHỌN TỆP TIN -->
+  <div id="uploadStep1">
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-folder-plus me-2"></i><span data-i18n="step1_card_header">BƯỚC 1: CHỌN TẬP TIN GIAO DỊCH</span></span>
+            <span class="badge bg-primary bg-opacity-25 text-primary" data-i18n="step1_badge">Bước 1/2</span>
+          </div>
+          <div class="card-body d-flex flex-column">
+            <form id="uploadForm" class="flex-grow-1 d-flex flex-column">
+              <label class="upload-zone mb-3 flex-grow-1 d-flex flex-column justify-content-center align-items-center" id="dropZone" for="fileInput">
+                <i class="bi bi-cloud-arrow-up fs-1 text-primary mb-2"></i>
+                <h5 class="mt-2" data-i18n="dropzone_title">Chọn hoặc kéo thả file dữ liệu vào đây</h5>
+                <p class="text-muted mb-0 small" data-i18n="dropzone_formats">Hỗ trợ định dạng: .CSV, .XLS, .XLSX</p>
+                <input type="file" id="fileInput" name="file" accept=".csv,.xls,.xlsx" required class="d-none">
+              </label>
+              <div id="fileInfo" class="alert alert-info py-2 px-3 d-none mb-3 align-items-center gap-2">
+                <i class="bi bi-file-earmark-check fs-5"></i>
+                <div><span data-i18n="file_selected_label">Đã chọn:</span> <strong id="fileNameDisplay"></strong></div>
+              </div>
+              <button type="submit" class="btn btn-primary w-100 py-2 mt-auto fw-bold" id="submitBtn">
+                <i class="bi bi-magic me-1"></i><span data-i18n="btn_start_mapping">Đọc & Khớp Cột Dữ Liệu (Data Mapping)</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-header"><i class="bi bi-info-circle me-2"></i><span data-i18n="guide_card_header">QUY CHUẨN DỮ LIỆU & MÔ HÌNH</span></div>
+          <div class="card-body">
+            <div class="guide-box mb-3 p-3 rounded">
+              <h6 class="fw-bold text-primary"><i class="bi bi-table me-2"></i><span data-i18n="guide_box1_title">Tính Năng Auto-Map SaaS</span></h6>
+              <p class="text-muted small mb-2" data-i18n="guide_box1_desc">Tự động nhận diện tên cột tiếng Việt hoặc tiếng Anh:</p>
+              <ul class="text-muted small mb-0 ps-3">
+                <li><code>CustomerID</code>: <span data-i18n="hint_customer_id">Mã khách, ID KH...</span> | <code>InvoiceDate</code>: <span data-i18n="hint_invoice_date">Ngày mua, Date...</span></li>
+                <li><code>Quantity</code>: <span data-i18n="hint_quantity">Số lượng, Qty...</span> | <code>UnitPrice</code>: <span data-i18n="hint_unit_price">Đơn giá, Price...</span></li>
+                <li><code>InvoiceNo</code>: <span data-i18n="hint_invoice_no">Mã đơn, Order ID, Số hóa đơn...</span></li>
+              </ul>
+            </div>
+            <div class="guide-box p-3 rounded">
+              <h6 class="fw-bold text-success"><i class="bi bi-diagram-3 me-2"></i><span data-i18n="guide_box2_title">Quy trình Pipeline 3 bước</span></h6>
+              <ul class="text-muted small mb-0 ps-3">
+                <li><strong data-i18n="guide_step1_desc">Đọc nhanh dòng tiêu đề & dữ liệu tại máy khách.</strong></li>
+                <li><strong data-i18n="guide_step2_desc">Người dùng kiểm tra và khớp 5 trường chuẩn.</strong></li>
+                <li><strong data-i18n="guide_step3_desc">Gửi JSON chuẩn lên AI Pipeline phân cụm RFM.</strong></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- BƯỚC 2: GIAO DIỆN DATA MAPPER UI -->
+  <div id="uploadStep2" class="d-none">
+    <div class="card mb-4 border-primary shadow-sm">
+      <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2">
+          <span class="audit-icon-circle bg-primary bg-opacity-10 text-primary"><i class="bi bi-diagram-2"></i></span>
+          <div>
+            <h5 class="fw-bold mb-0" data-i18n="mapper_title">Khớp Cột Dữ Liệu (Data Field Mapping)</h5>
+            <small class="text-muted">
+              <span data-i18n="mapper_file_label">Tệp:</span> <strong class="text-primary" id="mapperFileName">data.csv</strong> |
+              <span data-i18n="mapper_total_label">Tổng:</span> <span class="badge bg-secondary" id="mapperRowCount">0</span> |
+              <span data-i18n="mapper_detected_label">Cột:</span> <span class="badge bg-secondary" id="mapperColCount">0</span>
+            </small>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-3 py-2" id="mappingProgressBadge">
+            <i class="bi bi-check-circle me-1"></i><span data-i18n="matched_progress">Đã khớp:</span> <strong id="matchedFieldsCount">0</strong>/5
+          </span>
+          <button class="btn btn-outline-secondary btn-sm" type="button" id="btnChangeFile">
+            <i class="bi bi-arrow-left me-1"></i><span data-i18n="btn_change_file">Đổi tệp khác</span>
+          </button>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div class="p-3 bg-light bg-opacity-50 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div class="small text-muted">
+            <i class="bi bi-magic text-primary me-1"></i><strong data-i18n="guide_box1_title">AI Auto-Map:</strong>
+            <span data-i18n="mapper_tip">Hệ thống đã tự động liên kết các cột tương ứng. Kiểm tra và điều chỉnh nếu cần.</span>
+          </div>
+          <button class="btn btn-sm btn-outline-primary" type="button" id="btnReAutoMap">
+            <i class="bi bi-arrow-repeat me-1"></i><span data-i18n="btn_re_automap">Tự động khớp lại</span>
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0" id="dataMapperTable">
+            <thead>
+              <tr>
+                <th style="width: 28%;"><i class="bi bi-cpu me-1"></i><span data-i18n="th_system_field">Trường Hệ Thống</span></th>
+                <th style="width: 32%;"><i class="bi bi-table me-1"></i><span data-i18n="th_file_column">Cột Trong Tệp</span></th>
+                <th style="width: 25%;"><i class="bi bi-eye me-1"></i><span data-i18n="th_preview">Dữ Liệu Mẫu</span></th>
+                <th style="width: 15%; text-align: center;"><i class="bi bi-check2-circle me-1"></i><span data-i18n="th_status">Trạng Thái</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% set mapper_fields = [('CustomerID', 'field_cust_title', 'Mã Khách Hàng', '(Customer ID)'), ('InvoiceDate', 'field_date_title', 'Ngày Giao Dịch', '(Purchase Date)'), ('Quantity', 'field_qty_title', 'Số Lượng Sản Phẩm', '(Quantity)'), ('UnitPrice', 'field_price_title', 'Đơn Giá Món Hàng', '(Unit Price)'), ('InvoiceNo', 'field_inv_title', 'Mã Đơn Hàng', '(Invoice / Order No)')] %}
+              {% for key, i18n_key, vi_name, en_name in mapper_fields %}
+              <tr class="mapper-row" data-field="{{ key }}">
+                <td>
+                  <div class="fw-bold"><span data-i18n="{{ i18n_key }}">{{ vi_name }}</span> <span class="text-muted fw-normal small">{{ en_name }}</span></div>
+                  <div class="d-flex align-items-center gap-2 mt-1">
+                    <code>{{ key }}</code>
+                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25" style="font-size: 0.68rem;" data-i18n="field_required">Bắt buộc</span>
+                  </div>
+                </td>
+                <td>
+                  <select class="form-select mapper-select" id="select_{{ key }}" data-field="{{ key }}">
+                    <option value="" data-i18n="unmapped_option">-- Chưa chọn cột / Unmapped --</option>
+                  </select>
+                </td>
+                <td><div class="sample-preview-box text-truncate" id="preview_{{ key }}"><span class="text-muted small fst-italic" data-i18n="no_data_preview">Chưa có dữ liệu</span></div></td>
+                <td class="text-center"><span class="badge bg-secondary" id="badge_{{ key }}"><i class="bi bi-dash me-1"></i><span data-i18n="status_unmatched">Chưa khớp</span></span></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="p-3 bg-light bg-opacity-25 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <button class="btn btn-outline-secondary" type="button" id="btnBackToStep1">
+            <i class="bi bi-arrow-left me-1"></i><span data-i18n="btn_back_upload">Quay lại chọn file</span>
+          </button>
+          <button class="btn btn-primary px-4 py-2 fw-bold" type="button" id="btnConfirmAndRun">
+            <i class="bi bi-play-circle-fill me-2"></i><span data-i18n="btn_confirm_run">Xác Nhận & Chạy Phân Tích Pipeline</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,54 +1,640 @@
-:root[data-theme="dark"] {
+/* =====================================================
+   ADMIN DASHBOARD LAYOUT & THEME VARIABLES
+   ===================================================== */
+:root[data-theme="dark"],
+[data-bs-theme="dark"] {
   color-scheme: dark;
-  --bg-body: #0f172a; --bg-card: #1e293b; --text-main: #f8fafc;
-  --text-muted: #94a3b8; --border-color: #334155; --accent: #3b82f6;
-  --terminal-bg: #020617; --table-hover: rgba(255,255,255,.05);
+  --bs-body-color: #f8fafc;
+  --bs-body-color-rgb: 248, 250, 252;
+  --bs-heading-color: #ffffff;
+  --bs-secondary-color: #94a3b8;
+  --bs-secondary-color-rgb: 148, 163, 184;
+  --bs-emphasis-color: #ffffff;
+  --bg-app: #0b1120;
+  --bg-sidebar: #0f172a;
+  --bg-topbar: #111c34;
+  --bg-card: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+  --border-light: #475569;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --sidebar-active-bg: #2563eb;
+  --sidebar-active-color: #ffffff;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.08);
+  --table-hover: rgba(255, 255, 255, 0.05);
+  --whatif-box-bg: rgba(15, 23, 42, 0.7);
+  --guide-box-bg: rgba(30, 41, 59, 0.6);
 }
+
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg-body: #f1f5f9; --bg-card: #fff; --text-main: #0f172a;
-  --text-muted: #64748b; --border-color: #e2e8f0; --accent: #2563eb;
-  --terminal-bg: #1e293b; --table-hover: rgba(0,0,0,.03);
+  --bg-app: #f1f5f9;
+  --bg-sidebar: #0f172a; /* Giữ sidebar tối chuyên nghiệp như phong cách admin */
+  --bg-topbar: #ffffff;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --border-light: #cbd5e1;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --sidebar-active-bg: #2563eb;
+  --sidebar-active-color: #ffffff;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.08);
+  --table-hover: rgba(0, 0, 0, 0.025);
+  --whatif-box-bg: rgba(248, 250, 252, 0.9);
+  --guide-box-bg: rgba(241, 245, 249, 0.85);
 }
-body { background: var(--bg-body); color: var(--text-main); min-height: 100vh; transition: .25s; }
-.text-muted { color: var(--text-muted) !important; }
-.navbar-custom, .card { background: var(--bg-card); border-color: var(--border-color); }
-.navbar-custom { padding: 1rem 0; border-bottom: 1px solid var(--border-color); }
-.card { color: var(--text-main); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.08); }
-.card-header { background: transparent; color: var(--text-muted); border-color: var(--border-color); font-weight: 700; }
-.nav-tabs { border-color: var(--border-color); }
-.nav-tabs .nav-link { color: var(--text-muted); font-weight: 600; }
-.nav-tabs .nav-link.active { background: var(--bg-card); color: var(--accent); border-color: var(--border-color) var(--border-color) var(--bg-card); }
-.nav-tabs .nav-link:disabled { opacity: .5; }
-.upload-zone { display: block; position: relative; padding: 3rem 1rem; text-align: center; border: 2px dashed var(--border-color); border-radius: 10px; cursor: pointer; }
-.upload-zone:hover, .upload-zone.dragover { border-color: var(--accent); background: rgba(59,130,246,.08); }
-.upload-zone input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-.btn-primary { background: var(--accent); border-color: var(--accent); }
-.theme-toggle { color: var(--accent); font-size: 1.25rem; }
-.terminal-log { height: 350px; overflow: auto; padding: 1rem; border: 1px solid #475569; border-radius: 8px; background: var(--terminal-bg); color: #4ade80; font: .9rem Consolas, monospace; }
-.terminal-log p { margin: 0 0 .35rem; overflow-wrap: anywhere; }
-.timestamp { color: #94a3b8; margin-right: .5rem; }
-.terminal-log .info { color: #60a5fa; }
-.terminal-log .error { color: #f87171; }
-.metric-card { height: 100%; padding: 1.25rem; border-left: 4px solid var(--accent); }
-.metric-card small { color: var(--text-muted); font-weight: 700; }
-.metric-card h2 { margin: .5rem 0 0; font-weight: 700; }
-.chart-wrap { height: 320px; }
-.table { --bs-table-color: var(--text-main); --bs-table-bg: transparent; --bs-table-border-color: var(--border-color); }
-.table thead { position: sticky; top: 0; z-index: 1; background: var(--bg-card); color: var(--text-muted); }
-.table tbody tr:hover { background: var(--table-hover); }
-.table-responsive { max-height: 500px; }
-.segment-badge { display: inline-block; padding: .35rem .65rem; border-radius: 1rem; font-size: .8rem; }
-.bg-vip { color: #ca8a04; background: rgba(234,179,8,.18); }
-.bg-trungthanh { color: #16a34a; background: rgba(34,197,94,.18); }
-.bg-vanglai { color: #0284c7; background: rgba(56,189,248,.18); }
-.bg-nguyco { color: #dc2626; background: rgba(239,68,68,.18); }
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-app);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* =====================================================
+   KHẮC PHỤC TRIỆT ĐỂ LỖI CHỮ MỜ TRONG DARK MODE
+   ===================================================== */
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] small.text-muted,
+[data-theme="dark"] .text-secondary {
+  color: #94a3b8 !important; /* Màu xám xanh Slate sáng rõ, tương phản tốt trên nền tối */
+}
+
+[data-theme="dark"] .text-body,
+[data-theme="dark"] .text-light-heading,
+[data-theme="dark"] .modal-title,
+[data-theme="dark"] .student-name,
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+[data-theme="dark"] strong:not(.badge),
+[data-theme="dark"] b {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark"] p,
+[data-theme="dark"] span:not(.badge),
+[data-theme="dark"] label,
+[data-theme="dark"] li {
+  color: inherit;
+}
+
+/* Nút Outline trong Dark Mode */
+[data-theme="dark"] .btn-outline-primary {
+  color: #60a5fa !important;
+  border-color: #3b82f6 !important;
+}
+[data-theme="dark"] .btn-outline-primary:hover {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+[data-theme="dark"] .btn-outline-secondary {
+  color: #cbd5e1 !important;
+  border-color: #475569 !important;
+}
+[data-theme="dark"] .btn-outline-secondary:hover {
+  background-color: #334155 !important;
+  color: #ffffff !important;
+}
+
+/* Hộp thông báo đã chọn file (alert-info) trong Dark Mode */
+[data-theme="dark"] .alert-info {
+  background-color: rgba(14, 165, 233, 0.15) !important;
+  border-color: rgba(14, 165, 233, 0.35) !important;
+  color: #7dd3fc !important;
+}
+[data-theme="dark"] .alert-info i,
+[data-theme="dark"] .alert-info strong {
+  color: #38bdf8 !important;
+}
+
+/* Form Controls (Input & Select) trong Dark Mode */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus {
+  background-color: #1e293b !important;
+  border-color: #60a5fa !important;
+  color: #f8fafc !important;
+  box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25) !important;
+}
+[data-theme="dark"] .form-control::placeholder {
+  color: #64748b !important;
+}
+[data-theme="dark"] .input-group-text {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+/* Thẻ mã code trong Dark Mode */
+[data-theme="dark"] code {
+  color: #93c5fd !important;
+  background-color: rgba(30, 58, 138, 0.35) !important;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* Badge và thẻ phụ trong Dark Mode */
+[data-theme="dark"] .bg-secondary {
+  background-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+/* =====================================================
+   ADMIN SHELL (SIDEBAR BÊN TRÁI + NỘI DUNG BÊN PHẢI)
+   ===================================================== */
+.admin-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  grid-template-rows: 64px 1fr;
+  grid-template-areas:
+    "sidebar topbar"
+    "sidebar main";
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* --- SIDEBAR TRANG QUẢN TRỊ --- */
+.admin-sidebar {
+  grid-area: sidebar;
+  width: 260px;
+  min-width: 260px;
+  background: var(--bg-sidebar);
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 1000;
+  transition: transform 0.3s ease, width 0.3s ease;
+}
+
+.sidebar-brand {
+  padding: 1.25rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.brand-title {
+  display: block;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+}
+.brand-sub {
+  display: block;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.sidebar-menu {
+  flex-grow: 1;
+  padding: 1rem 0.85rem;
+  overflow-y: auto;
+}
+.menu-section-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.8px;
+  padding: 0.5rem 0.65rem;
+  text-transform: uppercase;
+}
+
+/* Các link mục trong sidebar */
+.sidebar-menu .nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0.85rem;
+  margin-bottom: 0.25rem;
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+.sidebar-menu .nav-link:hover:not(:disabled) {
+  color: #ffffff;
+  background: var(--sidebar-hover-bg);
+}
+.sidebar-menu .nav-link.active {
+  background: var(--sidebar-active-bg) !important;
+  color: var(--sidebar-active-color) !important;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+.sidebar-menu .nav-link:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.sidebar-footer {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.8rem;
+}
+.status-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+}
+
+/* --- KHU VỰC CHÍNH BÊN PHẢI (MAIN CONTENT) --- */
+.admin-main {
+  grid-area: main;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--bg-app);
+}
+
+/* Topbar */
+.admin-topbar {
+  grid-area: topbar;
+  height: 64px;
+  background: var(--bg-topbar);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 990;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  width: 100%;
+}
+.sidebar-toggle-btn {
+  color: var(--text-main);
+  border: none;
+  background: transparent;
+  padding: 0.25rem;
+  line-height: 1;
+}
+.theme-toggle {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+.theme-toggle:hover {
+  background: var(--table-hover);
+}
+#langToggle {
+  font-size: 0.85rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  color: var(--text-main);
+  transition: all 0.2s ease;
+}
+#langToggle:hover {
+  background: var(--table-hover);
+  border-color: var(--accent) !important;
+}
+
+.admin-user-profile {
+  cursor: pointer;
+}
+.user-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.user-role {
+  font-size: 0.72rem;
+}
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+/* Body nội dung */
+.admin-body {
+  padding: 1.5rem 1.75rem;
+  flex-grow: 1;
+}
+
+/* =====================================================
+   CARDS & GIAO DIỆN NỘI DUNG TỪNG TRANG
+   ===================================================== */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-main);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-header {
+  background: transparent;
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  padding: 1rem 1.25rem;
+}
+
+/* Metric Cards */
+.metric-card {
+  height: 100%;
+  padding: 1.25rem;
+  border-left: 4px solid var(--accent);
+}
+.metric-card small {
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+.metric-card h2 {
+  margin: 0.4rem 0 0;
+  font-weight: 800;
+  font-size: 1.85rem;
+}
+.metric-icon {
+  font-size: 2.2rem;
+  opacity: 0.85;
+}
+
+/* Upload Zone */
+.upload-zone {
+  display: block;
+  position: relative;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  border: 2px dashed var(--border-light);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.upload-zone:hover, .upload-zone.dragover {
+  border-color: var(--accent);
+  background: rgba(37, 99, 235, 0.08);
+}
+.upload-zone input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.guide-box {
+  background: var(--guide-box-bg);
+  border: 1px solid var(--border-color);
+}
+
+/* Audit Log Page Elements */
+.audit-icon-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.table {
+  --bs-table-color: var(--text-main);
+  --bs-table-bg: transparent;
+  --bs-table-border-color: var(--border-color);
+}
+.table thead th {
+  background: rgba(0, 0, 0, 0.02);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.85rem 1rem;
+}
+[data-theme="dark"] .table thead th {
+  background: rgba(255, 255, 255, 0.03);
+  color: #cbd5e1;
+}
+.table tbody td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.table tbody tr:hover {
+  background: var(--table-hover);
+}
+
+.audit-log-row {
+  animation: fadeIn 0.25s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Badges phân khúc */
+.segment-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.bg-vip { color: #ca8a04; background: rgba(234, 179, 8, 0.18); }
+.bg-trungthanh { color: #16a34a; background: rgba(34, 197, 94, 0.18); }
+.bg-vanglai { color: #0284c7; background: rgba(56, 189, 248, 0.18); }
+.bg-nguyco { color: #dc2626; background: rgba(239, 68, 68, 0.18); }
 [data-theme="dark"] .bg-vip { color: #fef08a; }
 [data-theme="dark"] .bg-trungthanh { color: #86efac; }
 [data-theme="dark"] .bg-vanglai { color: #7dd3fc; }
 [data-theme="dark"] .bg-nguyco { color: #fca5a5; }
-#aiStrategy { line-height: 1.7; }
-@media (max-width: 576px) {
-  .nav-tabs .nav-link { padding: .65rem .45rem; font-size: .85rem; }
-  .metric-card { padding: .9rem; }
+
+/* What-If Box */
+.whatif-result-box {
+  background: var(--whatif-box-bg);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+.form-range::-webkit-slider-thumb { background: var(--accent); }
+.form-range::-moz-range-thumb { background: var(--accent); }
+
+.chart-wrap { height: 320px; }
+
+/* =====================================================
+   DATA MAPPER UI (THEO CHUẨN SAAS MAILCHIMP)
+   ===================================================== */
+.sample-preview-box {
+  padding: 0.45rem 0.75rem;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.8rem;
+  max-width: 260px;
+}
+[data-theme="dark"] .sample-preview-box {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: #334155;
+  color: #93c5fd;
+}
+
+.mapper-row:hover td {
+  background-color: var(--table-hover) !important;
+}
+
+.mapper-select {
+  font-weight: 500;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.mapper-select.is-valid {
+  border-color: #22c55e !important;
+  background-image: none !important;
+}
+
+/* Responsive Mobile Navigation */
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  cursor: pointer;
+}
+.sidebar-backdrop.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* =====================================================
+   BOOTSTRAP MODAL THEME (DARK / LIGHT MODE TỰ ĐỘNG)
+   ===================================================== */
+.modal-content {
+  background-color: var(--bg-card) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border-color) !important;
+}
+.modal-content,
+.modal-content h1,
+.modal-content h2,
+.modal-content h3,
+.modal-content h4,
+.modal-content h5,
+.modal-content h6,
+.modal-content strong,
+.modal-content b,
+.modal-content .modal-title {
+  color: var(--text-main) !important;
+}
+.modal-header, .modal-footer {
+  border-color: var(--border-color) !important;
+}
+[data-theme="dark"] .modal-content {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+[data-theme="dark"] .modal-content .modal-title,
+[data-theme="dark"] .modal-content .text-light-heading {
+  color: #ffffff !important;
+}
+[data-theme="dark"] .modal-content .card {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+}
+[data-theme="dark"] .modal-content .student-name {
+  color: #f1f5f9 !important;
+}
+[data-theme="dark"] .modal-feature-list {
+  color: #94a3b8 !important;
+}
+[data-theme="dark"] .modal-feature-list li {
+  color: #cbd5e1 !important;
+}
+[data-theme="dark"] .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+[data-theme="light"] .modal-content .card {
+  background-color: #f8fafc !important;
+  border-color: var(--border-color) !important;
+}
+[data-theme="light"] .modal-content .text-light-heading,
+[data-theme="light"] .modal-content .student-name {
+  color: #0f172a !important;
+}
+
+@media (max-width: 991px) {
+  .admin-layout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    transform: translateX(-100%);
+    z-index: 1000;
+  }
+  .admin-sidebar.show {
+    transform: translateX(0);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+  }
+  .admin-topbar {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 990;
+  }
+  .admin-main {
+    width: 100%;
+  }
+  .admin-body {
+    padding: 1rem;
+  }
 }

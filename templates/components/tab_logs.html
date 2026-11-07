@@ -1,0 +1,70 @@
+<!-- ================= PAGE 2: BẢNG NHẬT KÝ HỆ THỐNG (AUDIT LOGS) ================= -->
+<section class="tab-pane fade" id="logs" role="tabpanel" aria-labelledby="logs-tab">
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <span class="audit-icon-circle"><i class="bi bi-clock-history"></i></span>
+        <div>
+          <h4 class="fw-bold mb-0" data-i18n="logs_page_title">Nhật ký hoạt động</h4>
+          <p class="text-muted small mb-0" data-i18n="logs_page_sub">Theo dõi toàn bộ lịch sử tương tác, xử lý mô hình và pipeline AI</p>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm btn-outline-secondary" type="button" id="btnClearLogs" onclick="clearAuditLogs()">
+          <i class="bi bi-trash3 me-1"></i><span data-i18n="btn_clear_logs">Xóa nhật ký</span>
+        </button>
+        <button class="btn btn-sm btn-primary" type="button" id="btnExportLogs" onclick="exportAuditLogs()">
+          <i class="bi bi-cloud-arrow-down me-1"></i><span data-i18n="btn_export_logs">Xuất nhật ký (CSV)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar Tìm kiếm & Lọc nhanh theo phong cách Admin -->
+  <div class="card mb-3">
+    <div class="card-body py-2 px-3">
+      <div class="row g-2 align-items-center">
+        <div class="col-md-5">
+          <div class="input-group input-group-sm">
+            <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control border-start-0" id="logSearchInput" data-i18n-placeholder="search_placeholder" placeholder="Tìm kiếm theo nội dung, tác nhân...">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select form-select-sm" id="logActionFilter">
+            <option value="ALL" data-i18n="filter_all_actions">Tất cả hành động</option>
+            <option value="UPLOAD">UPLOAD</option>
+            <option value="PROCESSING">PROCESSING</option>
+            <option value="SUCCESS">SUCCESS</option>
+            <option value="ERROR">ERROR</option>
+            <option value="SYSTEM">SYSTEM</option>
+          </select>
+        </div>
+        <div class="col-md-4 text-md-end text-muted small">
+          <span data-i18n="showing_events">Đang hiển thị:</span> <strong id="logCountDisplay">2</strong> <span data-i18n="events_unit">sự kiện</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bảng Nhật ký Audit Logs -->
+  <div class="card">
+    <div class="card-body p-0">
+      <div class="table-responsive" style="max-height: 520px;">
+        <table class="table table-hover align-middle mb-0" id="auditLogTable">
+          <thead>
+            <tr>
+              <th style="width: 180px;"><i class="bi bi-clock me-1"></i><span data-i18n="th_time">Thời gian</span></th>
+              <th style="width: 170px;"><i class="bi bi-person-gear me-1"></i><span data-i18n="th_actor">Nhân viên / Tác nhân</span></th>
+              <th style="width: 150px;"><i class="bi bi-tag me-1"></i><span data-i18n="th_action">Hành động</span></th>
+              <th><i class="bi bi-chat-left-text me-1"></i><span data-i18n="th_details">Tóm tắt hoạt động & Chi tiết</span></th>
+            </tr>
+          </thead>
+          <tbody id="auditLogBody">
+            <!-- Render động qua ui.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
