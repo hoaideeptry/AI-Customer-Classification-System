@@ -14,14 +14,14 @@
 
 <br/>
 
-*Đồ án tốt nghiệp Chuyên ngành Công nghệ Phần mềm & Trí tuệ Nhân tạo*  
+*Đồ án môn học Trí tuệ Nhân tạo*  
 **Khoa Công nghệ Thông tin — Trường Đại học Lạc Hồng (LHU)**
 
 ---
 
-<!-- Thay thế link ảnh chụp màn hình dự án vào bên dưới -->
-<p align="center">
-  <img src="https://via.placeholder.com/1200x630.png?text=RFM+Intelligence+AI+Dashboard+Preview" alt="RFM Intelligence Dashboard Preview" width="90%" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12);" />
+<div align="center">
+  <img src="docs/1_dashboard_light.png" alt="RFM Intelligence Dashboard Banner" width="100%">
+</div>
 </p>
 
 </div>
@@ -33,9 +33,7 @@
 Trong kỷ nguyên thương mại điện tử và bán lẻ đa kênh, việc thấu hiểu hành vi khách hàng là yếu tố sống còn để tối ưu hóa chi phí Marketing (CAC), gia tăng giá trị trọn đời (CLV) và giảm thiểu tỷ lệ rời bỏ (Churn Rate).
 
 **RFM INTELLIGENCE** là giải pháp phần mềm dạng **SaaS (Software-as-a-Service)** hiện đại, kết hợp giữa mô hình kinh tế định lượng kinh điển **RFM (Recency, Frequency, Monetary)** và thuật toán **Machine Learning (K-Means Clustering & Random Forest Classifier)**. Hệ thống cho phép doanh nghiệp tự động phân tích lịch sử giao dịch thô, tự động nhận diện ánh xạ cột thông minh, phân cụm tệp khách hàng thành các nhóm hành vi chuyên biệt (VIP, Loyal, Potential, At Risk, Churned) và đề xuất chiến lược tiếp thị tự động theo thời gian thực.
-<div align="center">
-  <img src="docs/1_dashboard_light.png" alt="RFM Intelligence Dashboard Banner" width="100%">
-</div>
+
 ---
 
 ## ✨ 2. Tính Năng Nổi Bật (Key Features)
