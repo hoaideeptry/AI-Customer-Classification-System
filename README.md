@@ -33,7 +33,9 @@
 Trong kỷ nguyên thương mại điện tử và bán lẻ đa kênh, việc thấu hiểu hành vi khách hàng là yếu tố sống còn để tối ưu hóa chi phí Marketing (CAC), gia tăng giá trị trọn đời (CLV) và giảm thiểu tỷ lệ rời bỏ (Churn Rate).
 
 **RFM INTELLIGENCE** là giải pháp phần mềm dạng **SaaS (Software-as-a-Service)** hiện đại, kết hợp giữa mô hình kinh tế định lượng kinh điển **RFM (Recency, Frequency, Monetary)** và thuật toán **Machine Learning (K-Means Clustering & Random Forest Classifier)**. Hệ thống cho phép doanh nghiệp tự động phân tích lịch sử giao dịch thô, tự động nhận diện ánh xạ cột thông minh, phân cụm tệp khách hàng thành các nhóm hành vi chuyên biệt (VIP, Loyal, Potential, At Risk, Churned) và đề xuất chiến lược tiếp thị tự động theo thời gian thực.
-
+<div align="center">
+  <img src="docs/1_dashboard_light.png" alt="RFM Intelligence Dashboard Banner" width="100%">
+</div>
 ---
 
 ## ✨ 2. Tính Năng Nổi Bật (Key Features)
@@ -204,21 +206,21 @@ flowchart LR
   <tr>
     <td width="50%" align="center">
       <b>Data Mapper UI (Khớp cột SaaS)</b><br/>
-      <img src="https://via.placeholder.com/600x350.png?text=Smart+Data+Mapper+Interface" alt="Data Mapper UI" width="100%"/>
+      <img src="docs/2_data_mapper.png" alt="Data Mapper UI" width="100%"/>
     </td>
     <td width="50%" align="center">
       <b>Biểu đồ Không gian 3D Scatter (Plotly)</b><br/>
-      <img src="https://via.placeholder.com/600x350.png?text=3D+Cluster+Visualization" alt="3D Scatter Plot" width="100%"/>
+      <img src="docs/3_plotly_3d.png" alt="3D Scatter Plot" width="100%"/>
     </td>
   </tr>
   <tr>
     <td width="50%" align="center">
       <b>Bảng Nhật Ký Hoạt Động (Audit Logs)</b><br/>
-      <img src="https://via.placeholder.com/600x350.png?text=Enterprise+Audit+Logs" alt="Audit Logs Table" width="100%"/>
+      <img src="docs/4_audit_logs.png" alt="Audit Logs Table" width="100%"/>
     </td>
     <td width="50%" align="center">
       <b>Giao Diện Tối (Dark Mode UI)</b><br/>
-      <img src="https://via.placeholder.com/600x350.png?text=Dark+Mode+Dashboard" alt="Dark Mode UI" width="100%"/>
+      <img src="docs/5_dark_mode_modal.png" alt="Dark Mode UI" width="100%"/>
     </td>
   </tr>
 </table>
