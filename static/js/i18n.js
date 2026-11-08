@@ -47,7 +47,7 @@
       hint_invoice_no: "Mã đơn, Order ID, Số hóa đơn...",
 
       // Modal Thông tin đồ án
-      modal_info_title: "THÔNG TIN ĐỒ ÁN TỐT NGHIỆP",
+      modal_info_title: "THÔNG TIN ĐỒ ÁN MÔN HỌC",
       modal_project_name: "RFM INTELLIGENCE - HỆ THỐNG PHÂN LOẠI KHÁCH HÀNG BẰNG AI",
       modal_project_sub: "Nền tảng phân tích vòng đời khách hàng & dự báo chiến lược Marketing tự động theo chuẩn Doanh nghiệp SaaS",
       modal_univ_label: "Đơn vị đào tạo:",
@@ -349,7 +349,7 @@
   let currentLanguage = localStorage.getItem('rfm_language') || 'vi';
 
   // Hàm dịch có hỗ trợ nội suy tham số {param}
-  window.t = function(key, params = {}, fallback = '') {
+  window.t = function (key, params = {}, fallback = '') {
     const langDict = translations[currentLanguage] || translations.vi;
     let text = langDict[key] || fallback || key;
     if (typeof text === 'string' && params && typeof params === 'object') {
@@ -360,12 +360,12 @@
     return text;
   };
 
-  window.getCurrentLang = function() {
+  window.getCurrentLang = function () {
     return currentLanguage;
   };
 
   // Hàm chuyển đổi ngôn ngữ toàn diện (Deep i18n)
-  window.changeLanguage = function(lang) {
+  window.changeLanguage = function (lang) {
     if (lang !== 'vi' && lang !== 'en') {
       lang = currentLanguage === 'vi' ? 'en' : 'vi';
     }
